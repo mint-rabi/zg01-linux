@@ -11,6 +11,8 @@ verified on real hardware. Respond to the owner in Japanese unless asked otherwi
 - `config/wireplumber/51-zg01.conf` — forces capture `audio.format = "S32LE"`
 - `config/pipewire/zg01.conf` — loopbacks: "ZG01 Mic" (capture RL/RR) and "ZG01 Chat" (playback AUX8/AUX9)
 - `install.sh` / `uninstall.sh`
+- `collect-diagnostics.sh` — gathers lsusb, kernel log, /proc/asound, config
+  status and PipeWire state into one text file (user/host/serial masked)
 - `README.md` (English) / `README.ja.md` (Japanese) — keep both in sync
 
 ## Device facts (from `lsusb -v`)
@@ -86,10 +88,20 @@ verified on real hardware. Respond to the owner in Japanese unless asked otherwi
 2. Verify the streaming mix on Linux after enabling USB output in ZG Controller.
 3. Optional: "ZG01 Game" virtual sink (AUX0-7 as 7.1), verify 7.1 channel order.
 4. Optional: make the PipeWire config robust to different node names/profiles.
-5. Optional: a script to collect diagnostics (dmesg, /proc/asound, wpctl, pactl).
+5. Done: `collect-diagnostics.sh` (tested under WSL2 + usbipd with the ZG01;
+   PipeWire sections not yet exercised on bare-metal Linux).
 
 ## Notes
 
-- Testing needs real hardware; VMware USB passthrough did not expose the ZG01,
-  and WSL2 lacks snd-usb-audio.
+- Testing needs real hardware; VMware USB passthrough did not expose the ZG01.
+- WSL2 + usbipd (tested 2026-11-13, kernel 6.18.58.1-microsoft-standard-WSL2):
+  snd-usb-audio.ko is shipped; CONFIG_SND_PROC_FS is off (no /proc/asound).
+  Good for kernel-side checks only:
+  - without alias: only MIDI (midiC0D0/D1), as on bare metal
+  - with `modprobe snd_usb_audio quirk_alias=04991513:04991509`: alias applied,
+    pcmC0D0p/c created; `--dump-hw-params` shows playback S32_LE 10 ch 48000,
+    capture U8/S32_LE/FLOAT_LE/MU_LAW/A_LAW/SPECIAL 4 ch 48000
+  - actual streaming FAILS (aplay/arecord "Input/output error"): vhci_hcd logs
+    "vhci_get_frame_number: Not yet implemented", i.e. usbip cannot do the
+    isochronous transfers. Not a ZG01 problem; use bare-metal Linux for audio.
 - Do not redistribute Yamaha drivers, firmware, manuals or logos.

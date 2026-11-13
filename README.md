@@ -85,6 +85,19 @@ Low-output dynamic microphones may need the gain knob near maximum. Speak closer
 **The streaming mix (capture ch 0–1) is silent**
 By default the ZG01 sends the streaming mix only to HDMI OUT. Turning on "USB" in the STREAMING OUTPUT MIXER screen of ZG Controller (Windows/Mac) should route it to USB. The setting appears to be stored in the device, but this has not been verified on Linux. The mix is also not sent to USB when the HDMI input is HDCP-protected.
 
+## Reporting problems
+
+Run the diagnostics script as your normal user (not with sudo) and attach the
+generated `zg01-diag-*.txt` to a GitHub issue:
+
+```bash
+./collect-diagnostics.sh
+```
+
+It collects the USB descriptors, kernel log lines, `/proc/asound` info, installed
+config status and PipeWire state. The user name, host name and USB serial number
+are masked, but please review the file before posting.
+
 ## License
 
 MIT

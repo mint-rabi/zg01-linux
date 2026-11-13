@@ -85,6 +85,19 @@ cd zg01-linux
 **配信用ミックス（録音ch0〜1）が無音**
 ZG01は初期状態では、配信用ミックスをHDMI OUTにだけ出力します。Windows/MacのZG Controllerで、STREAMING OUTPUT MIXER画面の「USB」をONにすると、USBにも送られるはずです。この設定は本体に保存されると考えられますが、Linuxでの動作は未検証です。また、HDMI入力にHDCPがかかっている場合は、USBには出力されません。
 
+## 不具合の報告
+
+通常ユーザーで（sudoを付けずに）診断スクリプトを実行し、作成された
+`zg01-diag-*.txt` をGitHubのIssueに添付してください。
+
+```bash
+./collect-diagnostics.sh
+```
+
+USBディスクリプタ、カーネルログ、`/proc/asound` の情報、設定ファイルのインストール状況、
+PipeWireの状態を集めます。ユーザー名・ホスト名・USBシリアル番号は伏せ字にしますが、
+投稿前に内容を確認してください。
+
 ## ライセンス
 
 MIT
